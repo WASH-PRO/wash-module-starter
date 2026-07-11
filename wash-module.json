@@ -1,0 +1,34 @@
+{
+  "id": "module-starter",
+  "name": { "ru": "Стартер модуля", "en": "Module Starter" },
+  "description": {
+    "ru": "Шаблон для разработки модулей WASH PRO CRM. Записывает heartbeat в data/.",
+    "en": "Template for building WASH PRO CRM modules. Writes heartbeat to data/."
+  },
+  "version": "1.0.0",
+  "author": "WASH-PRO",
+  "license": "MIT",
+  "category": "template",
+  "icon": "assets/icon.svg",
+  "repository": "https://github.com/WASH-PRO/wash-module-starter",
+  "dependencies": [],
+  "minCrmVersion": "1.1.29",
+  "entrypoint": "src/main.py",
+  "scriptType": "daemon",
+  "settingsSchema": [
+    {
+      "key": "poll_interval",
+      "type": "number",
+      "label": { "ru": "Интервал heartbeat (сек)", "en": "Heartbeat interval (sec)" },
+      "default": 30,
+      "min": 10,
+      "max": 600
+    },
+    {
+      "key": "greeting",
+      "type": "string",
+      "label": { "ru": "Приветствие", "en": "Greeting" },
+      "default": "Hello from WASH module"
+    }
+  ]
+}
