@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Справка — Стартер модуля</title>
+  <style>
+    body { font-family: system-ui, sans-serif; line-height: 1.55; color: #1e293b; margin: 0; padding: 1.25rem; max-width: 42rem; }
+    h1 { font-size: 1.15rem; margin: 0 0 0.75rem; }
+    h2 { font-size: 0.95rem; margin: 1.25rem 0 0.5rem; }
+    p, li { font-size: 0.875rem; }
+    code { background: #f1f5f9; padding: 0.1rem 0.35rem; border-radius: 0.25rem; }
+  </style>
+</head>
+<body>
+  <h1>Стартер модуля WASH PRO CRM</h1>
+  <p>Шаблон для разработки собственных расширений. Daemon пишет heartbeat в <code>data/last_snapshot.json</code>.</p>
+  <h2>Структура репозитория</h2>
+  <ul>
+    <li><code>wash-module.json</code> — манифест для каталога CRM</li>
+    <li><code>src/main.py</code> — процесс в PyOrchestrator</li>
+    <li><code>ui/index.html</code> — настройки в Dashboard</li>
+    <li><code>ui/help.html</code> — этот файл справки</li>
+  </ul>
+  <h2>Публикация</h2>
+  <ol>
+    <li>Fork / clone этого репозитория</li>
+    <li>Измените <code>id</code> в манифесте</li>
+    <li>Добавьте запись в <code>modules/registry.json</code> CRM</li>
+  </ol>
+</body>
+</html>
