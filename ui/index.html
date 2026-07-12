@@ -41,15 +41,22 @@
         form.greeting.value = settings.greeting ?? '';
       },
       metrics(snap, status) {
-        const interval = status.settings && status.settings.poll_interval;
+        if (!snap || !snap.recordedAt) return [];
         return [
-          { label: WashModule.t({ ru: 'Heartbeat', en: 'Heartbeat' }), value: snap ? WashModule.formatDateTime(snap.recordedAt) : '—', accent: true },
-          { label: WashModule.t({ ru: 'Tick', en: 'Tick' }), value: snap && snap.tick != null ? snap.tick : '—' },
-          { label: WashModule.t({ ru: 'Интервал', en: 'Interval' }), value: interval != null ? `${interval}s` : '—' },
+          { label: WashModule.t({ ru: 'Heartbeat', en: 'Heartbeat' }), value: WashModule.formatDateTime(snap.recordedAt), accent: true },
+          { label: WashModule.t({ ru: 'Tick', en: 'Tick' }), value: snap.tick != null ? snap.tick : '—' },
+          { label: WashModule.t({ ru: 'Интервал', en: 'Interval' }), value: snap.pollInterval != null ? `${snap.pollInterval}s` : '—' },
         ];
       },
-      renderOverview(snap) {
-        const greeting = snap && snap.greeting ? WashModule.escapeHtml(snap.greeting) : '—';
+      renderOverview(snap, status) {
+        if (!snap || !snap.recordedAt) {
+          const running = status && (status.activeRunStatus === 'running' || (status.state && status.state.status === 'running'));
+          const hint = running
+            ? WashModule.t({ ru: 'Ожидание первого heartbeat…', en: 'Waiting for the first heartbeat…' })
+            : WashModule.t({ ru: 'Нет снимка — запустите модуль.', en: 'No snapshot yet — start the module.' });
+          return `<div class="wm-empty">${WashModule.escapeHtml(hint)}</div>`;
+        }
+        const greeting = snap.greeting ? WashModule.escapeHtml(snap.greeting) : '—';
         return `
           <div class="wm-card" style="margin-bottom:0.75rem">
             <strong>${WashModule.t({ ru: 'Текущее приветствие', en: 'Current greeting' })}</strong>
