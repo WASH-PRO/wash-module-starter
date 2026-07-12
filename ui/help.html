@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Справка — Стартер модуля</title>
+  <title>Help — Module Starter</title>
   <style>
     body { font-family: system-ui, sans-serif; line-height: 1.55; color: #1e293b; margin: 0; padding: 1.25rem; max-width: 42rem; }
     h1 { font-size: 1.15rem; margin: 0 0 0.75rem; }
@@ -13,20 +13,20 @@
   </style>
 </head>
 <body>
-  <h1>Стартер модуля WASH PRO CRM</h1>
-  <p>Шаблон для разработки собственных расширений. Daemon пишет heartbeat в <code>data/last_snapshot.json</code>.</p>
-  <h2>Структура репозитория</h2>
+  <h1>WASH PRO CRM Module Starter</h1>
+  <p>Template for building custom extensions. The daemon writes heartbeat to <code>data/last_snapshot.json</code>.</p>
+  <h2>Repository layout</h2>
   <ul>
-    <li><code>wash-module.json</code> — манифест для каталога CRM</li>
-    <li><code>src/main.py</code> — процесс в PyOrchestrator</li>
-    <li><code>ui/index.html</code> — настройки в Dashboard</li>
-    <li><code>ui/help.html</code> — этот файл справки</li>
+    <li><code>wash-module.json</code> — manifest for the CRM catalog</li>
+    <li><code>src/main.py</code> — PyOrchestrator process</li>
+    <li><code>ui/index.html</code> — settings in Dashboard</li>
+    <li><code>ui/help.html</code> / <code>ui/help.ru.html</code> — help (English / Russian)</li>
   </ul>
-  <h2>Публикация</h2>
+  <h2>Publishing</h2>
   <ol>
-    <li>Fork / clone этого репозитория</li>
-    <li>Измените <code>id</code> в манифесте</li>
-    <li>Добавьте запись в <code>modules/registry.json</code> CRM</li>
+    <li>Fork / clone this repository</li>
+    <li>Change <code>id</code> in the manifest</li>
+    <li>Add an entry to CRM <code>modules/registry.json</code></li>
   </ol>
 </body>
 </html>
