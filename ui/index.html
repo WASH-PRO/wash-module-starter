@@ -4,78 +4,68 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Module Starter</title>
-  <style>
-    :root { font-family: system-ui, sans-serif; color: #1e293b; background: #f8fafc; }
-    body { margin: 0; padding: 1rem 1.25rem; max-width: 52rem; }
-    h1 { font-size: 1.15rem; margin: 0 0 0.5rem; }
-    .muted { color: #64748b; font-size: 0.875rem; }
-    .box { background: #fff; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin: 1rem 0; }
-    code { background: #f1f5f9; padding: 0.1rem 0.35rem; border-radius: 0.25rem; }
-    label { display: block; margin-bottom: 0.75rem; font-size: 0.875rem; }
-    input { width: 100%; max-width: 20rem; padding: 0.4rem 0.5rem; border: 1px solid #cbd5e1; border-radius: 0.5rem; }
-    button { padding: 0.45rem 0.9rem; border-radius: 0.5rem; border: 0; background: #059669; color: #fff; cursor: pointer; }
-    pre { font-size: 0.75rem; overflow: auto; }
-    ul { margin: 0.5rem 0 0 1.1rem; }
-  </style>
+  <link rel="stylesheet" href="wash-module-ui.css" />
 </head>
-<body>
-  <h1 id="title">Стартер модуля</h1>
-  <p class="muted">Шаблон для разработки — форкните репозиторий и измените <code>wash-module.json</code> + <code>src/main.py</code>.</p>
-
-  <div class="box">
-    <strong>Структура модуля</strong>
-    <ul>
-      <li><code>wash-module.json</code> — манифест</li>
-      <li><code>src/main.py</code> — daemon в PyOrchestrator</li>
-      <li><code>ui/index.html</code> — эта страница настроек</li>
-      <li><code>data/</code> — создаётся при установке</li>
-    </ul>
-  </div>
-
-  <div class="box" id="heartbeat">Heartbeat: загрузка…</div>
-
-  <form id="settings-form">
-    <label>Интервал (сек)<input type="number" name="poll_interval" min="10" max="600" /></label>
-    <label>Приветствие<input type="text" name="greeting" /></label>
-    <button type="submit">Сохранить</button>
-  </form>
-
-  <pre id="snapshot"></pre>
-
+<body class="wm-body">
+  <div id="wm-app"></div>
   <script src="wash-module-sdk.js"></script>
   <script>
-    const MODULE_ID = 'module-starter';
-
-    async function refresh() {
-      const status = await WashModule.api(`/installed/${MODULE_ID}/status`);
-      const snap = status.snapshot;
-      document.getElementById('heartbeat').textContent = snap
-        ? `Heartbeat: ${snap.recordedAt} — ${snap.greeting}`
-        : 'Heartbeat: нет данных (запустите модуль)';
-      document.getElementById('snapshot').textContent = snap ? JSON.stringify(snap, null, 2) : '—';
-      if (status.settings) {
-        document.querySelector('[name=poll_interval]').value = status.settings.poll_interval ?? 30;
-        document.querySelector('[name=greeting]').value = status.settings.greeting ?? '';
-      }
-    }
-
-    document.getElementById('settings-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      await WashModule.api(`/installed/${MODULE_ID}/settings`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          settings: {
-            poll_interval: Number(fd.get('poll_interval')),
-            greeting: String(fd.get('greeting') || ''),
-          },
-        }),
-      });
-      await refresh();
+    WashModule.createPage({
+      moduleId: 'module-starter',
+      accent: '#059669',
+      refreshInterval: 10000,
+      title: { ru: 'Стартер модуля', en: 'Module starter' },
+      subtitle: {
+        ru: 'Шаблон для разработки: heartbeat в data/ и пример страницы настроек.',
+        en: 'Development template: heartbeat in data/ and sample settings page.',
+      },
+      settingsHtml: `
+        <div class="wm-grid-2">
+          <div class="wm-field">
+            <label class="wm-field-label">${WashModule.t({ ru: 'Интервал (сек)', en: 'Interval (sec)' })}</label>
+            <input class="wm-input" type="number" name="poll_interval" min="10" max="600" />
+          </div>
+          <div class="wm-field">
+            <label class="wm-field-label">${WashModule.t({ ru: 'Приветствие', en: 'Greeting' })}</label>
+            <input class="wm-input" type="text" name="greeting" />
+          </div>
+        </div>`,
+      collectSettings(form) {
+        return {
+          poll_interval: Number(form.poll_interval.value),
+          greeting: String(form.greeting.value || ''),
+        };
+      },
+      applySettings(settings, form) {
+        form.poll_interval.value = settings.poll_interval ?? 30;
+        form.greeting.value = settings.greeting ?? '';
+      },
+      metrics(snap, status) {
+        const interval = status.settings && status.settings.poll_interval;
+        return [
+          { label: WashModule.t({ ru: 'Heartbeat', en: 'Heartbeat' }), value: snap ? WashModule.formatDateTime(snap.recordedAt) : '—', accent: true },
+          { label: WashModule.t({ ru: 'Tick', en: 'Tick' }), value: snap && snap.tick != null ? snap.tick : '—' },
+          { label: WashModule.t({ ru: 'Интервал', en: 'Interval' }), value: interval != null ? `${interval}s` : '—' },
+        ];
+      },
+      renderOverview(snap) {
+        const greeting = snap && snap.greeting ? WashModule.escapeHtml(snap.greeting) : '—';
+        return `
+          <div class="wm-card" style="margin-bottom:0.75rem">
+            <strong>${WashModule.t({ ru: 'Текущее приветствие', en: 'Current greeting' })}</strong>
+            <p style="margin:0.35rem 0 0">${greeting}</p>
+          </div>
+          <h2 class="wm-section-title">${WashModule.t({ ru: 'Структура модуля', en: 'Module layout' })}</h2>
+          <ul class="wm-list">
+            <li><code>wash-module.json</code> — ${WashModule.t({ ru: 'манифест', en: 'manifest' })}</li>
+            <li><code>src/main.py</code> — ${WashModule.t({ ru: 'daemon в PyOrchestrator', en: 'PyOrchestrator daemon' })}</li>
+            <li><code>ui/index.html</code> — ${WashModule.t({ ru: 'эта страница', en: 'this page' })}</li>
+            <li><code>data/</code> — ${WashModule.t({ ru: 'настройки и снимки', en: 'settings and snapshots' })}</li>
+          </ul>
+          <h2 class="wm-section-title" style="margin-top:1rem">Snapshot</h2>
+          <pre class="wm-code">${WashModule.escapeHtml(snap ? JSON.stringify(snap, null, 2) : '—')}</pre>`;
+      },
     });
-
-    refresh();
-    setInterval(refresh, 10000);
   </script>
 </body>
 </html>
