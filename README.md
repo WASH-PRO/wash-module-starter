@@ -39,3 +39,7 @@ cd my-wash-module
 3. Dashboard → Modules → Refresh catalog → Install
 
 Documentation: [WASH PRO CRM — Modules](https://wash-pro.github.io/WASH-PRO-CRM/en/modules/)
+
+---
+
+**Website:** [wash-pro.tech](https://wash-pro.tech) · **GitHub:** [WASH-PRO](https://github.com/WASH-PRO)
